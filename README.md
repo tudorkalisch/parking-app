@@ -1,4 +1,4 @@
-# berting_app
+# parking_app
 
 A new Flutter application for car parking.
 
