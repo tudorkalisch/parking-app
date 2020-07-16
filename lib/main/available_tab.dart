@@ -1,17 +1,25 @@
+import 'package:flutter/services.dart';
+import 'package:parking_app/di/service_locator.dart';
+import 'package:parking_app/service/booking_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:berting_app/domain/booking.dart';
+import 'package:parking_app/domain/booking.dart';
 
+// ignore: must_be_immutable
 class AvailableTab extends StatelessWidget {
-  final List<Booking> bookings;
+  List<Booking> bookings;
+  BookingService bookingService;
 
-  AvailableTab(this.bookings);
+  AvailableTab() {
+    this.bookingService = locator<BookingService>();
+    this.bookings = bookingService.getBookings();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: bookings
+      children: bookingService
+          .getBookings()
           .map((element) => Card(
               elevation: 4.0,
               margin: EdgeInsets.all(8.0),
@@ -27,28 +35,12 @@ class AvailableTab extends StatelessWidget {
                           children: [
                             Expanded(
                                 child: Text(
-                              element.name,
+                              element.location,
                               overflow: TextOverflow.fade,
                               softWrap: false,
                               style: TextStyle(
                                   color: Colors.blueGrey, fontSize: 16.0),
                             )),
-                            RatingBar(
-                              minRating: 1,
-                              initialRating: element.rating,
-                              itemSize: 20,
-                              allowHalfRating: true,
-                              itemCount: 5,
-                              itemPadding:
-                                  EdgeInsets.symmetric(horizontal: 4.0),
-                              itemBuilder: (context, _) => Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                              ),
-                              onRatingUpdate: (rating) {
-                                print(rating);
-                              },
-                            )
                           ],
                         )),
                   ],

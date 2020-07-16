@@ -1,4 +1,4 @@
-import 'package:berting_app/domain/available_time.dart';
+import 'package:parking_app/domain/available_time.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -23,30 +23,30 @@ class AvailableList extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.symmetric(vertical: 8),
                         child: GestureDetector(
-                          onTap: () {
-                            onTimeSelected(element.time);
-                          },
+                            onTap: () {
+                              onTimeSelected(element.time);
+                            },
                             child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                                child: Text(
-                              element.name,
-                              overflow: TextOverflow.fade,
-                              softWrap: false,
-                              style: TextStyle(
-                                  color: Colors.blueGrey, fontSize: 16.0),
-                            )),
-                            Expanded(
-                                child: Text(
-                              element.getReadableTime(),
-                              overflow: TextOverflow.fade,
-                              softWrap: false,
-                              style: TextStyle(
-                                  color: Colors.blueGrey, fontSize: 16.0),
-                            ))
-                          ],
-                        ))),
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                    child: Text(
+                                  element.name,
+                                  overflow: TextOverflow.fade,
+                                  softWrap: false,
+                                  style: TextStyle(
+                                      color: Colors.blueGrey, fontSize: 16.0),
+                                )),
+                                Expanded(
+                                    child: Text(
+                                  element.getReadableTime(),
+                                  overflow: TextOverflow.fade,
+                                  softWrap: false,
+                                  style: TextStyle(
+                                      color: Colors.blueGrey, fontSize: 16.0),
+                                ))
+                              ],
+                            ))),
                   ],
                 ),
               )))

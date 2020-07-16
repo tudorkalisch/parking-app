@@ -1,5 +1,5 @@
-import 'package:berting_app/domain/available_time.dart';
-import 'package:berting_app/schedule/available_time/available_list.dart';
+import 'package:parking_app/domain/available_time.dart';
+import 'package:parking_app/schedule/available_time/available_list.dart';
 import 'package:flutter/cupertino.dart';
 
 class AvailableTimeWidget extends StatelessWidget {

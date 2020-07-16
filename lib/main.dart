@@ -1,11 +1,17 @@
-import 'package:berting_app/schedule/schedule_booking.dart';
+import 'package:parking_app/schedule/schedule_booking.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:berting_app/login/login_view.dart';
+import 'package:parking_app/login/login_view.dart';
 
+import 'di/service_locator.dart';
 import 'main/main_view.dart';
 
-void main() => runApp(HomePage());
+void main() => start();
+
+void start() {
+  setupLocator();
+  runApp(HomePage());
+}
 
 class HomePage extends StatelessWidget {
   @override

@@ -1,9 +1,12 @@
 class Booking {
-  var name;
-  var rating;
+  String id;
+  String location;
+  DateTime startTime;
+  DateTime endTime;
 
-  Booking(name, rating) {
-    this.name = name;
-    this.rating = rating;
+  Booking(this.id, this.location, this.startTime, this.endTime);
+
+  Booking.empty() {
+    this.location = "Location";
   }
 }

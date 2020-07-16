@@ -1,6 +1,6 @@
 # berting_app
 
-A new Flutter application for boat berthing.
+A new Flutter application for car parking.
 
 ## Getting Started
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:berting_app/main/main_view.dart';
 
 class LoginView extends StatefulWidget {
   @override

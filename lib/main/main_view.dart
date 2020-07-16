@@ -1,8 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'available_tab.dart';
-import 'package:berting_app/domain/booking.dart';
-import 'package:berting_app/schedule/schedule_booking.dart';
 
 class MainView extends StatelessWidget {
   @override
@@ -31,7 +29,7 @@ class MainView extends StatelessWidget {
                   child: CircleAvatar(
                       radius: 25,
                       backgroundImage: NetworkImage(
-                          "https://scontent.fomr1-1.fna.fbcdn.net/v/t1.0-9/92373732_2999831916739864_2570881927766605824_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=GwQkWbCgm7gAX_-s6QH&_nc_ht=scontent.fomr1-1.fna&oh=dc754d2a41ea5c0469d7494d254830ed&oe=5F090E92"))),
+                          "https://scontent.fomr1-1.fna.fbcdn.net/v/t1.0-9/92373732_2999831916739864_2570881927766605824_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=bowsgeNftZYAX_zQrx8&_nc_ht=scontent.fomr1-1.fna&oh=b89e6c819b7bad20782f281ae27f9bbd&oe=5F349012"))),
               title: Container(
                 margin: EdgeInsets.fromLTRB(0, 8, 0, 0),
                 child: Column(
@@ -86,11 +84,7 @@ class MainView extends StatelessWidget {
             },
           ),
           body: TabBarView(
-            children: [
-              AvailableTab([Booking("Parking Lake Birmingham", 3.2)]),
-              Text("Hello"),
-              Text("Upcoming")
-            ],
+            children: [AvailableTab(), Text("Hello"), Text("Upcoming")],
           ),
         ),
       ),

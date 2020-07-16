@@ -1,6 +1,9 @@
-import 'package:berting_app/domain/available_time.dart';
-import 'package:berting_app/schedule/calendar/calendar_view.dart';
-import 'package:berting_app/schedule/payment/payment_view.dart';
+import 'package:parking_app/di/service_locator.dart';
+import 'package:parking_app/service/booking_service.dart';
+import 'package:parking_app/domain/booking.dart';
+import 'package:parking_app/domain/available_time.dart';
+import 'package:parking_app/schedule/calendar/calendar_view.dart';
+import 'package:parking_app/schedule/payment/payment_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -16,11 +19,15 @@ class ScheduleView extends StatefulWidget {
 class ScheduleState extends State<ScheduleView>
     with SingleTickerProviderStateMixin {
   TabController tabController;
+  BookingService bookingService;
+  Booking currentBooking;
 
   @override
   void initState() {
     super.initState();
-    tabController = new TabController(vsync: this, length: 3);
+    this.tabController = new TabController(vsync: this, length: 3);
+    this.bookingService = locator<BookingService>();
+    this.currentBooking = Booking.empty();
   }
 
   @override
@@ -35,16 +42,22 @@ class ScheduleState extends State<ScheduleView>
 
   void onDaySelected(DateTime day, List events) {
     print(day.toString() + " " + events.toString());
+
+    this.currentBooking.startTime = day;
     navigateToNext();
   }
 
   void onTimeSelected(DateTime time) {
     print(time.toString());
+
+    this.currentBooking.startTime.add(Duration(hours: time.hour));
     navigateToNext();
   }
 
   void onPaymentComplete() {
     print("Payment complete");
+
+    bookingService.addBooking(currentBooking);
     Navigator.of(context).popUntil(ModalRoute.withName("/main"));
   }
 
@@ -72,11 +85,16 @@ class ScheduleState extends State<ScheduleView>
               CalendarView(this.onDaySelected),
               AvailableTimeWidget(this.onTimeSelected, [
                 AvailableTime("Parking1", DateTime.now()),
-                AvailableTime("Parking2", DateTime.now()),
-                AvailableTime("Parking3", DateTime.now()),
-                AvailableTime("Parking4", DateTime.now()),
-                AvailableTime("Parking5", DateTime.now()),
-                AvailableTime("Parking6", DateTime.now())
+                AvailableTime(
+                    "Parking2", DateTime.now().add(Duration(hours: 1))),
+                AvailableTime(
+                    "Parking2", DateTime.now().add(Duration(hours: 2))),
+                AvailableTime(
+                    "Parking2", DateTime.now().add(Duration(hours: 3))),
+                AvailableTime(
+                    "Parking2", DateTime.now().add(Duration(hours: 4))),
+                AvailableTime(
+                    "Parking2", DateTime.now().add(Duration(hours: 5))),
               ]),
               PaymentView(this.onPaymentComplete),
             ],
