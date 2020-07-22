@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:parking_app/di/service_locator.dart';
 import 'package:parking_app/service/booking_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,20 +5,49 @@ import 'package:flutter/material.dart';
 import 'package:parking_app/domain/booking.dart';
 
 // ignore: must_be_immutable
-class AvailableTab extends StatelessWidget {
-  List<Booking> bookings;
+class BookedTab extends StatefulWidget {
   BookingService bookingService;
 
-  AvailableTab() {
+  BookedTab() {
     this.bookingService = locator<BookingService>();
-    this.bookings = bookingService.getBookings();
+  }
+
+  @override
+  _BookedTabState createState() => _BookedTabState(bookingService);
+}
+
+class _BookedTabState extends State<BookedTab> with WidgetsBindingObserver {
+  BookingService bookingsService;
+  List<Booking> _bookings;
+
+  _BookedTabState(this.bookingsService);
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    _bookings = bookingsService.getBookings();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      setState(() {
+        _bookings = bookingsService.getBookings();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: bookingService
-          .getBookings()
+      children: _bookings
           .map((element) => Card(
               elevation: 4.0,
               margin: EdgeInsets.all(8.0),
