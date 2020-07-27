@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parking_app/di/service_locator.dart';
 import 'package:parking_app/domain/parking.dart';
+import 'package:parking_app/main/available/parking_card.dart';
 import 'package:parking_app/service/parking_service.dart';
 
 // ignore: must_be_immutable
@@ -47,34 +48,7 @@ class _AvailableTabState extends State<AvailableTab>
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: _parkings
-          .map((element) => Card(
-              elevation: 4.0,
-              margin: EdgeInsets.all(8.0),
-              child: Container(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                                child: Text(
-                              element.location,
-                              overflow: TextOverflow.fade,
-                              softWrap: false,
-                              style: TextStyle(
-                                  color: Colors.blueGrey, fontSize: 16.0),
-                            )),
-                          ],
-                        )),
-                  ],
-                ),
-              )))
-          .toList(),
+      children: _parkings.map((element) => ParkingCard(element)).toList(),
     );
   }
 }

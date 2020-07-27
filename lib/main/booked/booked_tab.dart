@@ -1,8 +1,11 @@
+import 'package:google_maps_webservice/places.dart';
 import 'package:parking_app/di/service_locator.dart';
 import 'package:parking_app/service/booking_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:parking_app/domain/booking.dart';
+
+import 'booking_card.dart';
 
 // ignore: must_be_immutable
 class BookedTab extends StatefulWidget {
@@ -25,8 +28,26 @@ class _BookedTabState extends State<BookedTab> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    getDetails();
     _bookings = bookingsService.getBookings();
     super.initState();
+  }
+
+  void getDetails() {
+    var places =
+        GoogleMapsPlaces(apiKey: "AIzaSyBDFSRtLHnKEtvytSAhvPdZpW3EG0EuZpc");
+    places
+        .searchByText("123 Main Street")
+        .then((value) => logData(value))
+        .catchError((error) => logError(error));
+  }
+
+  void logData(dynamic detailsResponse) {
+    print(detailsResponse.toString());
+  }
+
+  void logError(var error) {
+    print(error);
   }
 
   @override
@@ -47,34 +68,7 @@ class _BookedTabState extends State<BookedTab> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: _bookings
-          .map((element) => Card(
-              elevation: 4.0,
-              margin: EdgeInsets.all(8.0),
-              child: Container(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                                child: Text(
-                              element.location,
-                              overflow: TextOverflow.fade,
-                              softWrap: false,
-                              style: TextStyle(
-                                  color: Colors.blueGrey, fontSize: 16.0),
-                            )),
-                          ],
-                        )),
-                  ],
-                ),
-              )))
-          .toList(),
+      children: _bookings.map((element) => BookingCard(element)).toList(),
     );
   }
 }
