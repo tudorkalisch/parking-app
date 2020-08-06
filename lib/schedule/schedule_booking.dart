@@ -43,6 +43,7 @@ class ScheduleState extends State<ScheduleView>
   void onDaySelected(DateTime day, List events) {
     print(day.toString() + " " + events.toString());
 
+    this.currentBooking.location = "Location";
     this.currentBooking.startTime = day;
     navigateToNext();
   }
@@ -50,15 +51,30 @@ class ScheduleState extends State<ScheduleView>
   void onTimeSelected(DateTime time) {
     print(time.toString());
 
-    this.currentBooking.startTime.add(Duration(hours: time.hour));
+    this.currentBooking.endTime =
+        this.currentBooking.startTime.add(Duration(hours: time.hour));
     navigateToNext();
   }
 
   void onPaymentComplete() {
     print("Payment complete");
 
-    bookingService.addBooking(currentBooking);
-    Navigator.of(context).popUntil(ModalRoute.withName("/main"));
+    bookingService
+        .addBooking(currentBooking)
+        .then(onAddBookingSuccess)
+        .catchError(onAddBookingErrror);
+  }
+
+  void onAddBookingErrror(dynamic value) {
+    goToMain();
+  }
+
+  void onAddBookingSuccess(dynamic value) {
+    goToMain();
+  }
+
+  void goToMain() {
+    Navigator.of(context).popUntil(ModalRoute.withName('/main'));
   }
 
   @override

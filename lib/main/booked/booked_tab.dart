@@ -21,7 +21,7 @@ class BookedTab extends StatefulWidget {
 
 class _BookedTabState extends State<BookedTab> with WidgetsBindingObserver {
   BookingService bookingsService;
-  List<Booking> _bookings;
+  List<Booking> _bookings = List.empty();
 
   _BookedTabState(this.bookingsService);
 
@@ -29,7 +29,9 @@ class _BookedTabState extends State<BookedTab> with WidgetsBindingObserver {
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     getDetails();
-    _bookings = bookingsService.getBookings();
+    bookingsService.getBookings().then((bookings) => setState(() {
+          _bookings = bookings;
+        }));
     super.initState();
   }
 
@@ -59,9 +61,9 @@ class _BookedTabState extends State<BookedTab> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      setState(() {
-        _bookings = bookingsService.getBookings();
-      });
+      bookingsService.getBookings().then((value) => setState(() {
+            _bookings = value;
+          }));
     }
   }
 

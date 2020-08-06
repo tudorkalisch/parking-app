@@ -6,7 +6,14 @@ class Booking {
 
   Booking(this.id, this.location, this.startTime, this.endTime);
 
-  Booking.empty() {
-    this.location = "Location";
+  Booking.empty();
+
+  static fromJson(e) {
+    Booking b = Booking.empty();
+    b.id = e['id'];
+    b.location = e['location'];
+    b.startTime = DateTime.fromMillisecondsSinceEpoch(e['startTime']);
+    b.endTime = DateTime.fromMillisecondsSinceEpoch(e['endTime']);
+    return b;
   }
 }
