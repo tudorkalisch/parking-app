@@ -1,33 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:parking_app/di/service_locator.dart';
-import 'package:parking_app/domain/parking.dart';
-import 'package:parking_app/main/available/parking_card.dart';
-import 'package:parking_app/service/parking_service.dart';
+import 'package:parking_app/domain/location.dart';
+import 'package:parking_app/main/available/location_card.dart';
+import 'package:parking_app/service/location_service.dart';
 
 // ignore: must_be_immutable
 class AvailableTab extends StatefulWidget {
-  ParkingService parkingService;
+  LocationService locationService;
+  Function goToSchedule;
 
-  AvailableTab() {
-    parkingService = locator<ParkingService>();
+  AvailableTab(BuildContext context, Function goToSchedule) {
+    locationService = locator<LocationService>();
+    this.goToSchedule = goToSchedule;
   }
 
   @override
-  _AvailableTabState createState() => _AvailableTabState(parkingService);
+  _AvailableTabState createState() =>
+      _AvailableTabState(goToSchedule, locationService);
 }
 
 class _AvailableTabState extends State<AvailableTab>
     with WidgetsBindingObserver {
-  ParkingService parkingService;
-  List<Parking> _parkings;
+  LocationService locationService;
+  Function goToSchedule;
+  List<Location> _locations = List.empty();
 
-  _AvailableTabState(this.parkingService);
+  _AvailableTabState(this.goToSchedule, this.locationService);
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
-    _parkings = parkingService.getParkings();
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      locationService.getLocations().then((locations) => setState(() {
+            _locations = locations;
+          }));
+    });
   }
 
   @override
@@ -39,16 +47,18 @@ class _AvailableTabState extends State<AvailableTab>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      setState(() {
-        _parkings = parkingService.getParkings();
-      });
+      locationService.getLocations().then((locations) => setState(() {
+            _locations = locations;
+          }));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: _parkings.map((element) => ParkingCard(element)).toList(),
+    return ListView(
+      children: _locations
+          .map((element) => LocationCard(element, goToSchedule))
+          .toList(),
     );
   }
 }

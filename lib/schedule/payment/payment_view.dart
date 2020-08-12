@@ -1,12 +1,18 @@
+import 'package:device_calendar/device_calendar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:parking_app/domain/booking.dart';
+import 'package:parking_app/domain/location.dart';
 import 'package:square_in_app_payments/in_app_payments.dart';
 import 'package:square_in_app_payments/models.dart';
 
 class PaymentView extends StatefulWidget {
   final Function onPaymentComplete;
+  final Location currentLocation;
+  final Booking currentBooking;
 
-  PaymentView(this.onPaymentComplete);
+  PaymentView(
+      this.onPaymentComplete, this.currentLocation, this.currentBooking);
 
   @override
   PaymentState createState() {
@@ -27,9 +33,7 @@ class PaymentState extends State<PaymentView> {
         onCardEntryCancel: _onCardEntryCancel);
   }
 
-  void _onCardEntryCancel() {
-    //TODO Cancel card entry
-  }
+  void _onCardEntryCancel() {}
 
   void _cardNonceRequestSuccess(CardDetails cardDetails) {
     print(cardDetails.nonce);
@@ -51,14 +55,36 @@ class PaymentState extends State<PaymentView> {
         barrierDismissible: false);
   }
 
+  void setBookingInCalendar(PaymentView widget) async {
+    await DeviceCalendarPlugin().retrieveCalendars().then((value) => {
+          DeviceCalendarPlugin()
+              .createOrUpdateEvent(new Event(value.data.elementAt(0).id,
+                  title: "Booking at " + widget.currentBooking.location.name,
+                  start: widget.currentBooking.startTime,
+                  end: widget.currentBooking.endTime,
+                  description: "You have a parking booking at " +
+                      widget.currentBooking.location.name))
+              .then((value) => print("Success"))
+        });
+  }
+
   AlertDialog _createPaymentCofirmationDialog(BuildContext context) {
     return AlertDialog(
         title: Text("Payment Succesful"),
-        content: Text("Your payment was successful"),
+        content: Text("Do you want to save this booking to your calendar?"),
         actions: <Widget>[
           FlatButton(
-            child: Text("Ok"),
-            onPressed: onPaymentComplete,
+            child: Text("No"),
+            onPressed: () => {Navigator.pop(context), onPaymentComplete()},
+            textColor: Colors.blue,
+          ),
+          FlatButton(
+            child: Text("Yes"),
+            onPressed: () => {
+              Navigator.pop(context),
+              setBookingInCalendar(widget),
+              onPaymentComplete()
+            },
             textColor: Colors.blue,
           )
         ],
@@ -94,7 +120,36 @@ class PaymentState extends State<PaymentView> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20)),
                           TextSpan(
-                              text: "10:30", style: TextStyle(fontSize: 20))
+                              text: widget.currentBooking.startTime.hour
+                                      .toString() +
+                                  ":" +
+                                  formatMinutes(
+                                      widget.currentBooking.startTime.minute),
+                              style: TextStyle(fontSize: 20))
+                        ]),
+                  ),
+                ],
+              )),
+          Container(
+              margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: "To: ",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20)),
+                          TextSpan(
+                              text: widget.currentBooking.endTime.hour
+                                      .toString() +
+                                  ":" +
+                                  formatMinutes(
+                                      widget.currentBooking.endTime.minute),
+                              style: TextStyle(fontSize: 20))
                         ]),
                   ),
                 ],
@@ -112,7 +167,11 @@ class PaymentState extends State<PaymentView> {
                               text: "Hours: ",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20)),
-                          TextSpan(text: "3", style: TextStyle(fontSize: 20))
+                          TextSpan(
+                              text: (widget.currentBooking.endTime.hour -
+                                      widget.currentBooking.startTime.hour)
+                                  .toString(),
+                              style: TextStyle(fontSize: 20))
                         ]),
                   ),
                 ],
@@ -130,7 +189,14 @@ class PaymentState extends State<PaymentView> {
                               text: "Amount: ",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20)),
-                          TextSpan(text: "10\$", style: TextStyle(fontSize: 20))
+                          TextSpan(
+                              text: (widget.currentLocation.price *
+                                          (widget.currentBooking.endTime.hour -
+                                              widget.currentBooking.startTime
+                                                  .hour))
+                                      .toString() +
+                                  "\$",
+                              style: TextStyle(fontSize: 20))
                         ]),
                   ),
                 ],
@@ -138,5 +204,13 @@ class PaymentState extends State<PaymentView> {
         ],
       ),
     );
+  }
+
+  String formatMinutes(int minutes) {
+    if (minutes < 10) {
+      return "0" + minutes.toString();
+    }
+
+    return minutes.toString();
   }
 }

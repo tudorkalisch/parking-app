@@ -20,17 +20,22 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name="location_id")
     Location location;
+    UUID userId;
     long startTime;
     long endTime;
+    @Column(length = 1500000)
+    String qr;
 
     public Booking() {
     }
 
-    public Booking(@JsonProperty("id") UUID id, @JsonProperty("startTime") long startTime, @JsonProperty("endTime") long endTime, @JsonProperty("location") Location location) {
+    public Booking(@JsonProperty("id") UUID id, @JsonProperty("user_id") UUID userId, @JsonProperty("startTime") long startTime, @JsonProperty("endTime") long endTime, @JsonProperty("location") Location location, @JsonProperty("qr") String qr) {
         this.id = id;
+        this.userId = userId;
         this.location = location;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.qr = qr;
     }
 
     public UUID getId() {
@@ -39,6 +44,14 @@ public class Booking {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 
     public Location getLocation() {
@@ -64,4 +77,13 @@ public class Booking {
     public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
+
+    public String getQR() {
+        return qr;
+    }
+
+    public void setQR(String qr) {
+        this.qr = qr;
+    }
 }
+

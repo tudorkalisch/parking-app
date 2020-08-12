@@ -1,7 +1,7 @@
 import 'package:parking_app/di/service_locator.dart';
+import 'package:parking_app/domain/location.dart';
 import 'package:parking_app/service/booking_service.dart';
 import 'package:parking_app/domain/booking.dart';
-import 'package:parking_app/domain/available_time.dart';
 import 'package:parking_app/schedule/calendar/calendar_view.dart';
 import 'package:parking_app/schedule/payment/payment_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,9 +10,14 @@ import 'package:flutter/material.dart';
 import 'available_time/available_time_view.dart';
 
 class ScheduleView extends StatefulWidget {
+  static const routeName = '/schedule';
+
+  final Location location;
+  ScheduleView(this.location);
+
   @override
   State<StatefulWidget> createState() {
-    return ScheduleState();
+    return ScheduleState(location);
   }
 }
 
@@ -20,14 +25,18 @@ class ScheduleState extends State<ScheduleView>
     with SingleTickerProviderStateMixin {
   TabController tabController;
   BookingService bookingService;
-  Booking currentBooking;
+  Booking currentBooking = Booking.empty();
+  Location currentLocation;
+
+  ScheduleState(this.currentLocation) {
+    this.currentBooking.location = currentLocation;
+  }
 
   @override
   void initState() {
     super.initState();
     this.tabController = new TabController(vsync: this, length: 3);
     this.bookingService = locator<BookingService>();
-    this.currentBooking = Booking.empty();
   }
 
   @override
@@ -41,35 +50,45 @@ class ScheduleState extends State<ScheduleView>
   }
 
   void onDaySelected(DateTime day, List events) {
-    print(day.toString() + " " + events.toString());
-
-    this.currentBooking.location = "Location";
-    this.currentBooking.startTime = day;
-    navigateToNext();
+    setState(() {
+      this.currentBooking.startTime = day;
+      this.currentBooking.endTime = day;
+    });
   }
 
-  void onTimeSelected(DateTime time) {
-    print(time.toString());
+  void onStartTimeSelected(TimeOfDay startTime) {
+    setState(() {
+      this.currentBooking.startTime = new DateTime(
+          currentBooking.startTime.year,
+          currentBooking.startTime.month,
+          currentBooking.startTime.day,
+          startTime.hour,
+          startTime.minute);
+    });
+  }
 
-    this.currentBooking.endTime =
-        this.currentBooking.startTime.add(Duration(hours: time.hour));
-    navigateToNext();
+  void onEndTimeSelected(TimeOfDay endTime) {
+    setState(() {
+      this.currentBooking.endTime = new DateTime(
+          currentBooking.endTime.year,
+          currentBooking.endTime.month,
+          currentBooking.endTime.day,
+          endTime.hour,
+          endTime.minute);
+    });
   }
 
   void onPaymentComplete() {
-    print("Payment complete");
-
     bookingService
         .addBooking(currentBooking)
         .then(onAddBookingSuccess)
-        .catchError(onAddBookingErrror);
+        .catchError(onAddBookingError);
   }
 
-  void onAddBookingErrror(dynamic value) {
-    goToMain();
-  }
+  void onAddBookingError(dynamic value) {}
 
-  void onAddBookingSuccess(dynamic value) {
+  void onAddBookingSuccess(dynamic value) async {
+    print("Booking succesful");
     goToMain();
   }
 
@@ -79,8 +98,8 @@ class ScheduleState extends State<ScheduleView>
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: DefaultTabController(
+    return Scaffold(
+      body: DefaultTabController(
         length: 3,
         child: Scaffold(
           appBar: AppBar(
@@ -99,20 +118,10 @@ class ScheduleState extends State<ScheduleView>
             controller: tabController,
             children: [
               CalendarView(this.onDaySelected),
-              AvailableTimeWidget(this.onTimeSelected, [
-                AvailableTime("Parking1", DateTime.now()),
-                AvailableTime(
-                    "Parking2", DateTime.now().add(Duration(hours: 1))),
-                AvailableTime(
-                    "Parking2", DateTime.now().add(Duration(hours: 2))),
-                AvailableTime(
-                    "Parking2", DateTime.now().add(Duration(hours: 3))),
-                AvailableTime(
-                    "Parking2", DateTime.now().add(Duration(hours: 4))),
-                AvailableTime(
-                    "Parking2", DateTime.now().add(Duration(hours: 5))),
-              ]),
-              PaymentView(this.onPaymentComplete),
+              AvailableTimeWidget(this.onStartTimeSelected,
+                  this.onEndTimeSelected, this.currentBooking),
+              PaymentView(
+                  this.onPaymentComplete, currentLocation, currentBooking),
             ],
           ),
           bottomNavigationBar: new BottomAppBar(

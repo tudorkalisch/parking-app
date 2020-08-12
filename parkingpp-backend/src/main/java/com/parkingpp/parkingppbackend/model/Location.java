@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name="location")
+@Table(name = "location")
 public class Location {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -20,12 +20,13 @@ public class Location {
     @Column(length = 1500000)
     String thumbnail;
     double price;
+    double rating;
 
     public Location() {
 
     }
 
-    public Location(@JsonProperty("id") UUID id,@JsonProperty("name") String name,@JsonProperty("thumbnail")  String thumbnail,@JsonProperty("price") double price) {
+    public Location(@JsonProperty("id") UUID id, @JsonProperty("name") String name, @JsonProperty("thumbnail") String thumbnail, @JsonProperty("price") double price, @JsonProperty("rating") double rating) {
         this.id = id;
         this.name = name;
         this.thumbnail = thumbnail;
@@ -62,5 +63,13 @@ public class Location {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 }

@@ -12,10 +12,10 @@ import java.util.List;
 @RequestMapping("api/v1/location")
 @RestController
 public class LocationController {
-    private final LocationService locationService;
+    private LocationService locationService;
 
     @Autowired
-    public LocationController(LocationService locationService) {
+    public void setLocationController(LocationService locationService) {
         this.locationService = locationService;
     }
 

@@ -1,11 +1,8 @@
 package com.parkingpp.parkingppbackend.service;
 
-import com.parkingpp.parkingppbackend.dao.BookingDataAccessService;
 import com.parkingpp.parkingppbackend.dao.LocationDataAccessService;
-import com.parkingpp.parkingppbackend.model.Booking;
 import com.parkingpp.parkingppbackend.model.Location;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

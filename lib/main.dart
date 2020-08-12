@@ -1,4 +1,3 @@
-import 'package:parking_app/schedule/schedule_booking.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:parking_app/login/login_view.dart';
@@ -18,13 +17,14 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Title',
-      theme: new ThemeData(
-        primarySwatch: Colors.red,
-      ),
+      theme: ThemeData(
+          accentColor: Colors.lightBlueAccent,
+          primarySwatch: Colors.lightBlue,
+          hintColor: Colors.white,
+          brightness: Brightness.light),
       routes: {
-        '/main': (BuildContext context) => MainView(),
-        '/schedule': (BuildContext context) => ScheduleView(),
-        '/login': (BuildContext context) => LoginView(),
+        MainView.routeName: (BuildContext context) => MainView(),
+        LoginView.routeName: (BuildContext context) => LoginView(),
       },
       home: LoginView(),
     );

@@ -1,4 +1,4 @@
-package com.flutter.berting_app
+package com.flutter.parking_app
 
 import android.os.Bundle
 

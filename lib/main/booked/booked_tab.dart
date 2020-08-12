@@ -1,4 +1,3 @@
-import 'package:google_maps_webservice/places.dart';
 import 'package:parking_app/di/service_locator.dart';
 import 'package:parking_app/service/booking_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,20 +27,10 @@ class _BookedTabState extends State<BookedTab> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    getDetails();
     bookingsService.getBookings().then((bookings) => setState(() {
           _bookings = bookings;
         }));
     super.initState();
-  }
-
-  void getDetails() {
-    var places =
-        GoogleMapsPlaces(apiKey: "AIzaSyBDFSRtLHnKEtvytSAhvPdZpW3EG0EuZpc");
-    places
-        .searchByText("123 Main Street")
-        .then((value) => logData(value))
-        .catchError((error) => logError(error));
   }
 
   void logData(dynamic detailsResponse) {
@@ -69,7 +58,7 @@ class _BookedTabState extends State<BookedTab> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: _bookings.map((element) => BookingCard(element)).toList(),
     );
   }
