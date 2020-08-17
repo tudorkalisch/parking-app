@@ -2,8 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:parking_app/di/service_locator.dart';
+import 'package:parking_app/login/login_fragment.dart';
 import 'package:parking_app/main/main_view.dart';
 import 'package:parking_app/service/login_service.dart';
+import 'package:square_in_app_payments/in_app_payments.dart';
+import 'package:square_in_app_payments/models.dart';
 
 // ignore: must_be_immutable
 class LoginView extends StatefulWidget {
@@ -30,9 +33,13 @@ class LoginState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Center(
-            child: Container(
+    return WillPopScope(
+        onWillPop: () async {
+          enableLogin();
+          return true;
+        },
+        child: Scaffold(
+            body: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -93,32 +100,7 @@ class LoginState extends State<LoginView> {
                             ),
                           )),
                       if (loginState)
-                        Column(
-                          children: [
-                            Container(
-                                margin: EdgeInsets.all(10),
-                                child: SizedBox(
-                                  height: 35,
-                                  width: 140,
-                                  child: FlatButton(
-                                    onPressed: () {
-                                      validateLogin();
-                                    },
-                                    textColor: Colors.white,
-                                    child: Text('Login'),
-                                  ),
-                                )),
-                            SizedBox(
-                                height: 35,
-                                width: 140,
-                                child: FlatButton(
-                                    onPressed: () {
-                                      enableRegister();
-                                    },
-                                    textColor: Colors.white,
-                                    child: Text("Create account")))
-                          ],
-                        ),
+                        LoginFragment(this.validateLogin, this.enableRegister),
                       if (!loginState)
                         Column(
                           children: [
@@ -148,7 +130,16 @@ class LoginState extends State<LoginView> {
                                       register();
                                     },
                                     textColor: Colors.white,
-                                    child: Text("Register")))
+                                    child: Text("Register"))),
+                            SizedBox(
+                                height: 35,
+                                width: 250,
+                                child: FlatButton(
+                                    onPressed: () {
+                                      registerAsPremium();
+                                    },
+                                    textColor: Colors.white,
+                                    child: Text("Register as premium account")))
                           ],
                         ),
                     ]))));
@@ -181,17 +172,46 @@ class LoginState extends State<LoginView> {
     });
   }
 
+  void onPremiumRegisterSuccess() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return createPremiumRegister().build(context);
+        },
+        barrierDismissible: false);
+
+    setState(() {
+      loginState = true;
+    });
+  }
+
+  AlertDialog createPremiumRegister() {
+    return AlertDialog(
+        title: Text("Premium account created"),
+        content: Text("Congratulations on creating your premium account!"),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Close"),
+            textColor: Colors.blue,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )
+        ],
+        elevation: 24.0);
+  }
+
   void onRegisterError(Object error) {
     log(error.toString());
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return createRegisterErrorDialog(context).build(context);
+          return createRegisterErrorDialog().build(context);
         },
         barrierDismissible: false);
   }
 
-  AlertDialog createRegisterErrorDialog(BuildContext context) {
+  AlertDialog createRegisterErrorDialog() {
     return AlertDialog(
         title: Text("Register unsuccessful"),
         content: Text("There is already a user with that username"),
@@ -199,7 +219,9 @@ class LoginState extends State<LoginView> {
           FlatButton(
             child: Text("Ok"),
             textColor: Colors.blue,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
           )
         ],
         elevation: 24.0);
@@ -208,6 +230,12 @@ class LoginState extends State<LoginView> {
   void enableRegister() {
     setState(() {
       loginState = false;
+    });
+  }
+
+  void enableLogin() {
+    setState(() {
+      loginState = true;
     });
   }
 
@@ -228,19 +256,58 @@ class LoginState extends State<LoginView> {
       setState(() {
         confirmErrorText = "Passwords do not match";
       });
-      // confirmPasswordTextController.addListener(() {
-      //   setState(() {
-      //     confirmErrorText = null;
-      //   });
-      //   confirmPasswordTextController.removeListener(() {});
-      // });
+
+      loginService
+          .registerAccount(
+              emailTextController.text, passwordTextController.text, false)
+          .then(onRegisterSuccess)
+          .catchError(onRegisterError);
+    }
+  }
+
+  void registerAsPremium() {
+    String password = passwordTextController.text;
+    String confirmPassword = confirmPasswordTextController.text;
+    String username = emailTextController.text;
+
+    if (password == null || confirmPassword == null || username == null) {
+      return;
+    }
+
+    if (password.isEmpty || confirmPassword.isEmpty || username.isEmpty) {
+      return;
+    }
+
+    if (password != confirmPassword) {
+      setState(() {
+        confirmErrorText = "Passwords do not match";
+      });
+
       return;
     }
 
     loginService
-        .registerAccount(emailTextController.text, passwordTextController.text)
-        .then(onRegisterSuccess)
+        .registerAccount(
+            emailTextController.text, passwordTextController.text, true)
+        .then(pay)
         .catchError(onRegisterError);
+  }
+
+  void pay(bool success) {
+    InAppPayments.setSquareApplicationId(
+        "sandbox-sq0idb-tnVEE-Lx-gwCRKgpkPkJIA");
+    InAppPayments.startCardEntryFlow(
+        onCardNonceRequestSuccess: _cardNonceRequestSuccess,
+        onCardEntryCancel: _onCardEntryCancel);
+  }
+
+  void _onCardEntryCancel() {}
+
+  void _cardNonceRequestSuccess(CardDetails cardDetails) {
+    print(cardDetails.nonce);
+
+    InAppPayments.completeCardEntry(
+        onCardEntryComplete: onPremiumRegisterSuccess);
   }
 
   void goToMain() {

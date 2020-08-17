@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:parking_app/domain/user.dart';
 import 'package:parking_app/service/preference_settings.dart';
 import 'package:requests/requests.dart';
 
@@ -18,15 +20,20 @@ class LoginService {
       throw new Exception("Unauthorized");
     }
 
-    await SharedPrefs.setUserId(r.content());
+    User user = User.fromJson(json.decode(r.content()));
+
+    await SharedPrefs.setUserId(user.id);
+    await SharedPrefs.setIsPremium(user.isPremium);
     return true;
   }
 
-  Future<bool> registerAccount(String username, String password) async {
+  Future<bool> registerAccount(
+      String username, String password, bool isPremium) async {
     Response r = await Requests.post(baseUrl + 'register',
         body: {
           'username': username,
           'password': password,
+          'premium': isPremium,
         },
         bodyEncoding: RequestBodyEncoding.JSON);
 

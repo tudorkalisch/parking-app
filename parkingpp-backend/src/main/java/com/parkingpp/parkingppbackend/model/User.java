@@ -21,14 +21,16 @@ public class User {
     UUID id;
     String username;
     String password;
+    Boolean premium;
 
     public User() {
     }
 
-    public User(@JsonProperty("id") UUID id, @JsonProperty("username") String username, @JsonProperty("password") String password) {
+    public User(@JsonProperty("id") UUID id, @JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("premium") Boolean premium) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.premium = premium;
     }
 
     public UUID getId() {
@@ -55,12 +57,21 @@ public class User {
         this.password = password;
     }
 
+    public Boolean getPremium() {
+        return premium;
+    }
+
+    public void setPremium(Boolean premium) {
+        this.premium = premium;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", premium=" + premium +
                 '}';
     }
 }

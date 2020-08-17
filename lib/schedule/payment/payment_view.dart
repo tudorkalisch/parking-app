@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:parking_app/domain/booking.dart';
 import 'package:parking_app/domain/location.dart';
+import 'package:parking_app/service/preference_settings.dart';
 import 'package:square_in_app_payments/in_app_payments.dart';
 import 'package:square_in_app_payments/models.dart';
 
@@ -22,6 +23,9 @@ class PaymentView extends StatefulWidget {
 
 class PaymentState extends State<PaymentView> {
   Function onPaymentComplete;
+
+  String amountLabelByPremium = "Amount: ";
+  String amountTextByPremium = "Amount: ";
 
   PaymentState(this.onPaymentComplete);
 
@@ -93,6 +97,7 @@ class PaymentState extends State<PaymentView> {
 
   @override
   Widget build(BuildContext context) {
+    genereateTextForPremium();
     return Container(
       alignment: Alignment.center,
       child: Column(
@@ -190,12 +195,7 @@ class PaymentState extends State<PaymentView> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20)),
                           TextSpan(
-                              text: (widget.currentLocation.price *
-                                          (widget.currentBooking.endTime.hour -
-                                              widget.currentBooking.startTime
-                                                  .hour))
-                                      .toString() +
-                                  "\$",
+                              text: amountTextByPremium,
                               style: TextStyle(fontSize: 20))
                         ]),
                   ),
@@ -212,5 +212,29 @@ class PaymentState extends State<PaymentView> {
     }
 
     return minutes.toString();
+  }
+
+  void genereateTextForPremium() async {
+    if (await SharedPrefs.getIsPremium()) {
+      setState(() {
+        amountTextByPremium = (widget.currentLocation.price *
+                        (widget.currentBooking.endTime.hour -
+                            widget.currentBooking.startTime.hour) -
+                    (widget.currentLocation.price *
+                            (widget.currentBooking.endTime.hour -
+                                widget.currentBooking.startTime.hour)) *
+                        0.15)
+                .toString() +
+            "\$";
+      });
+    } else {
+      setState(() {
+        amountTextByPremium = (widget.currentLocation.price *
+                    (widget.currentBooking.endTime.hour -
+                        widget.currentBooking.startTime.hour))
+                .toString() +
+            "\$";
+      });
+    }
   }
 }

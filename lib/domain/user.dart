@@ -1,8 +1,9 @@
 class User {
   String id;
   String username;
+  bool isPremium;
 
-  User(this.id, this.username);
+  User(this.id, this.username, this.isPremium);
 
   User.empty();
 
@@ -10,6 +11,7 @@ class User {
     User u = User.empty();
     u.id = e['id'];
     u.username = e['username'];
+    u.isPremium = e['premium'];
     return u;
   }
 }

@@ -103,14 +103,24 @@ class ScheduleState extends State<ScheduleView>
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-            title: Text("New booking"),
+            iconTheme: IconThemeData(color: Colors.white),
+            title: Text(
+              "New booking",
+              style: TextStyle(color: Colors.white),
+            ),
             bottom: TabBar(
               controller: tabController,
-              labelColor: Colors.white,
               tabs: [
-                Tab(text: "Calendar"),
-                Tab(text: "Time"),
-                Tab(text: "Payment")
+                Tab(
+                  child:
+                      Text("Calendar", style: TextStyle(color: Colors.white)),
+                ),
+                Tab(
+                  child: Text("Time", style: TextStyle(color: Colors.white)),
+                ),
+                Tab(
+                  child: Text("Payment", style: TextStyle(color: Colors.white)),
+                ),
               ],
             ),
           ),

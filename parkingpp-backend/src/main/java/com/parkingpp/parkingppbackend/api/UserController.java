@@ -32,10 +32,10 @@ public class UserController {
     }
 
     @PostMapping(value = "/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
+    public ResponseEntity<User> login(@RequestBody User user) {
 
         try {
-            return ResponseEntity.ok(userService.login(user).getId().toString());
+            return ResponseEntity.ok(userService.login(user));
         } catch (AuthenticationException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
