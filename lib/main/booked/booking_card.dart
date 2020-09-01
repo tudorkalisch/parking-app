@@ -119,7 +119,7 @@ class BookingCard extends StatelessWidget {
         availableMaps); // [AvailableMap { mapName: Google Maps, mapType: google }, ...]
 
     await availableMaps.first.showDirections(
-      destination: Coords(37.759392, -122.5107336),
+      destination: Coords(location.latitude, location.longitude),
     );
   }
 

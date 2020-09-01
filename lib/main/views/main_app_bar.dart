@@ -10,7 +10,11 @@ class MainAppBar extends StatelessWidget {
     return AppBar(
         bottom: TabBar(
           labelColor: Colors.white,
-          tabs: [Tab(text: "Available"), Tab(text: "Booked")],
+          tabs: [
+            Tab(text: "Available"),
+            Tab(text: "Booked"),
+            Tab(text: "Past bookings")
+          ],
         ),
         leading: Container(
             alignment: Alignment.center,
@@ -45,7 +49,9 @@ class MainAppBar extends StatelessWidget {
                 alignment: Alignment.topLeft,
               ),
               FlatButton(
-                onPressed: logout(context),
+                onPressed: () {
+                  this.logout(context);
+                },
                 textColor: Colors.white,
                 child: Text("Logout"),
               )

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parking_app/login/login_view.dart';
+import 'package:parking_app/main/past_bookings/past_bookings_tab.dart';
 import 'package:parking_app/main/views/main_app_bar.dart';
 import 'package:parking_app/main/views/main_bottom_bar.dart';
 import 'package:parking_app/schedule/schedule_booking.dart';
@@ -14,13 +15,17 @@ class MainView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: DefaultTabController(
-        length: 2,
+        length: 3,
         child: Scaffold(
           appBar: MainAppBar(logout).build(context),
           extendBody: true,
           bottomNavigationBar: MainBottomBar().build(context),
           body: TabBarView(
-            children: [AvailableTab(context, scheduleBooking()), BookedTab()],
+            children: [
+              AvailableTab(context, scheduleBooking()),
+              BookedTab(),
+              PastBookingTab()
+            ],
           ),
         ),
       ),

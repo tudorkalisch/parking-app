@@ -2,13 +2,12 @@ package com.parkingpp.parkingppbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.context.annotation.Primary;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name="booking")
+@Table(name = "booking")
 public class Booking {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -18,7 +17,7 @@ public class Booking {
     )
     UUID id;
     @ManyToOne
-    @JoinColumn(name="location_id")
+    @JoinColumn(name = "location_id")
     Location location;
     UUID userId;
     long startTime;

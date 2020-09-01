@@ -5,7 +5,7 @@ import 'package:parking_app/service/preference_settings.dart';
 import 'package:requests/requests.dart';
 
 class LoginService {
-  String baseUrl = 'http://192.168.0.101:8080/api/v1/user/';
+  String baseUrl = 'http://192.168.0.106:8080/api/v1/user/';
   LoginService();
 
   Future<bool> login(String username, String password) async {

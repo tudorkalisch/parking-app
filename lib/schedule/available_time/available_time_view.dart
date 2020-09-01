@@ -92,14 +92,10 @@ class _AvailableTimeWidgetState extends State<AvailableTimeWidget> {
       context: context,
       initialTime: TimeOfDay.now(),
     );
-    if (temp != null && compareStartTimeToEndTime(temp)) {
-      setState(() => {
-            {startTime = temp}
-          });
-      onStartTimeSelected(startTime);
-    } else {
-      showCompareTimeErrorDialog();
-    }
+    setState(() => {
+          {startTime = temp}
+        });
+    onStartTimeSelected(startTime);
   }
 
   void selectEndTime(Function onEndTimeSelected, BuildContext context) async {
@@ -107,42 +103,7 @@ class _AvailableTimeWidgetState extends State<AvailableTimeWidget> {
       context: context,
       initialTime: TimeOfDay.now(),
     );
-    if (temp != null) {
-      setState(() => {endTime = temp});
-      onEndTimeSelected(endTime);
-    }
-  }
-
-  void showCompareTimeErrorDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return createShowTimeErrorDialog(context).build(context);
-        },
-        barrierDismissible: true);
-  }
-
-  AlertDialog createShowTimeErrorDialog(BuildContext context) {
-    return AlertDialog(
-        title: Text("Time error"),
-        content: Text("Start time is after end time"),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () => {Navigator.pop(context)},
-            child: Text("Ok"),
-            textColor: Colors.blue,
-          )
-        ],
-        elevation: 24.0);
-  }
-
-  bool compareStartTimeToEndTime(TimeOfDay selectedTime) {
-    double doubleStartTime =
-        selectedTime.hour.toDouble() + (selectedTime.minute.toDouble() / 60);
-    double doubleEndTime =
-        endTime.hour.toDouble() + (endTime.minute.toDouble() / 60);
-
-    double timeDiff = doubleStartTime - doubleEndTime;
-    return timeDiff < 0;
+    setState(() => {endTime = temp});
+    onEndTimeSelected(endTime);
   }
 }

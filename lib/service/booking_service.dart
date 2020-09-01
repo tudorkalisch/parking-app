@@ -6,17 +6,53 @@ import 'package:parking_app/service/preference_settings.dart';
 import 'package:requests/requests.dart';
 
 class BookingService {
-  String baseUrl = 'http://192.168.0.101:8080/api/v1/booking/';
+  String baseUrl = 'http://192.168.0.106:8080/api/v1/booking/';
   BookingService();
 
-  Future<List<Booking>> getBookings() async {
+  Future<List<Booking>> getFutureBookings() async {
     String userId = await SharedPrefs.getUserId();
     var response =
         await Requests.get(baseUrl + "all", headers: {'user_id': userId});
 
-    return (json.decode(response.content()) as List)
+    List<Booking> allBookings = (json.decode(response.content()) as List)
         .map((e) => Booking.fromJson(e) as Booking)
         .toList();
+
+    allBookings.sort((a, b) => a.startTime.compareTo(b.startTime));
+
+    List<Booking> result = new List();
+    DateTime currentTime = DateTime.now();
+
+    for (Booking booking in allBookings) {
+      if (booking.startTime.isAfter(currentTime)) {
+        result.add(booking);
+      }
+    }
+
+    return Future.value(result);
+  }
+
+  Future<List<Booking>> getPastBookings() async {
+    String userId = await SharedPrefs.getUserId();
+    var response =
+        await Requests.get(baseUrl + "all", headers: {'user_id': userId});
+
+    List<Booking> allBookings = (json.decode(response.content()) as List)
+        .map((e) => Booking.fromJson(e) as Booking)
+        .toList();
+
+    allBookings.sort((a, b) => b.startTime.compareTo(a.startTime));
+
+    List<Booking> result = new List();
+    DateTime currentTime = DateTime.now();
+
+    for (Booking booking in allBookings) {
+      if (booking.startTime.isBefore(currentTime)) {
+        result.add(booking);
+      }
+    }
+
+    return Future.value(result);
   }
 
   Future<void> addBooking(Booking booking) async {

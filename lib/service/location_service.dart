@@ -4,7 +4,7 @@ import 'package:parking_app/domain/location.dart';
 import 'package:requests/requests.dart';
 
 class LocationService {
-  String baseUrl = 'http://192.168.0.101:8080/api/v1/location/';
+  String baseUrl = 'http://192.168.0.106:8080/api/v1/location/';
   LocationService();
 
   Future<List<Location>> getLocations() async {

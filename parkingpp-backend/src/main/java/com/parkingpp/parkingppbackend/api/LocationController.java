@@ -1,8 +1,6 @@
 package com.parkingpp.parkingppbackend.api;
 
-import com.parkingpp.parkingppbackend.model.Booking;
 import com.parkingpp.parkingppbackend.model.Location;
-import com.parkingpp.parkingppbackend.service.BookingService;
 import com.parkingpp.parkingppbackend.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -45,7 +45,90 @@ class ScheduleState extends State<ScheduleView>
     super.dispose();
   }
 
+  bool testDataFromTabIndex(int index) {
+    switch (index) {
+      case 0:
+        {
+          if (currentBooking.startTime.isBefore(DateTime.now())) {
+            showCalendarError();
+            return false;
+          }
+        }
+        break;
+      case 1:
+        {
+          if (!compareStartTimeToEndTime()) {
+            showTimeSelectionError();
+            return false;
+          }
+        }
+        break;
+    }
+
+    return true;
+  }
+
+  void showCalendarError() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return createCalendarError().build(context);
+        },
+        barrierDismissible: true);
+  }
+
+  void showTimeSelectionError() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return createShowTimeErrorDialog().build(context);
+        },
+        barrierDismissible: true);
+  }
+
+  AlertDialog createCalendarError() {
+    return AlertDialog(
+        title: Text("Date error"),
+        content: Text("Please select a date that is after the current date"),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => {Navigator.pop(context)},
+            child: Text("Ok"),
+            textColor: Colors.blue,
+          )
+        ],
+        elevation: 24.0);
+  }
+
+  AlertDialog createShowTimeErrorDialog() {
+    return AlertDialog(
+        title: Text("Time error"),
+        content: Text("Start time is after end time"),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => {Navigator.pop(context)},
+            child: Text("Ok"),
+            textColor: Colors.blue,
+          )
+        ],
+        elevation: 24.0);
+  }
+
+  bool compareStartTimeToEndTime() {
+    double doubleStartTime = currentBooking.startTime.hour.toDouble() +
+        (currentBooking.startTime.minute.toDouble() / 60);
+    double doubleEndTime = currentBooking.endTime.hour.toDouble() +
+        (currentBooking.endTime.minute.toDouble() / 60);
+
+    double timeDiff = doubleStartTime - doubleEndTime;
+    return timeDiff < 0;
+  }
+
   void navigateToNext() {
+    if (!testDataFromTabIndex(tabController.index)) {
+      return;
+    }
+
     tabController.index = tabController.index + 1;
   }
 
@@ -57,6 +140,10 @@ class ScheduleState extends State<ScheduleView>
   }
 
   void onStartTimeSelected(TimeOfDay startTime) {
+    if (startTime == null) {
+      return;
+    }
+
     setState(() {
       this.currentBooking.startTime = new DateTime(
           currentBooking.startTime.year,
@@ -68,6 +155,10 @@ class ScheduleState extends State<ScheduleView>
   }
 
   void onEndTimeSelected(TimeOfDay endTime) {
+    if (endTime == null) {
+      return;
+    }
+
     setState(() {
       this.currentBooking.endTime = new DateTime(
           currentBooking.endTime.year,

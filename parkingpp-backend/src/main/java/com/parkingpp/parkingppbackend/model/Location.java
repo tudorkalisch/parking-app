@@ -21,16 +21,27 @@ public class Location {
     String thumbnail;
     double price;
     double rating;
+    double longitude;
+    double latitude;
 
     public Location() {
 
     }
 
-    public Location(@JsonProperty("id") UUID id, @JsonProperty("name") String name, @JsonProperty("thumbnail") String thumbnail, @JsonProperty("price") double price, @JsonProperty("rating") double rating) {
+    public Location(@JsonProperty("id") UUID id,
+                    @JsonProperty("name") String name,
+                    @JsonProperty("thumbnail") String thumbnail,
+                    @JsonProperty("price") double price,
+                    @JsonProperty("rating") double rating,
+                    @JsonProperty("longitude") double longitude,
+                    @JsonProperty("latitude") double latitude) {
         this.id = id;
         this.name = name;
         this.thumbnail = thumbnail;
         this.price = price;
+        this.rating = rating;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public UUID getId() {
@@ -71,5 +82,21 @@ public class Location {
 
     public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 }

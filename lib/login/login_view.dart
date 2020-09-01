@@ -139,7 +139,15 @@ class LoginState extends State<LoginView> {
                                       registerAsPremium();
                                     },
                                     textColor: Colors.white,
-                                    child: Text("Register as premium account")))
+                                    child:
+                                        Text("Register as premium account"))),
+                            SizedBox(
+                                height: 35,
+                                width: 300,
+                                child: Text(
+                                  "Creating a premium account will be a one time payment only for 10% money back",
+                                  style: TextStyle(color: Colors.grey),
+                                )),
                           ],
                         ),
                     ]))));
@@ -159,6 +167,7 @@ class LoginState extends State<LoginView> {
   }
 
   void onLoginError(var exception) {
+    showLoginErrorDialog();
     log(exception.toString());
   }
 
@@ -183,6 +192,31 @@ class LoginState extends State<LoginView> {
     setState(() {
       loginState = true;
     });
+  }
+
+  void showLoginErrorDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return createLoginErrorDialog().build(context);
+        },
+        barrierDismissible: false);
+  }
+
+  AlertDialog createLoginErrorDialog() {
+    return AlertDialog(
+        title: Text("Login unsuccessful"),
+        content: Text("We could not find a user with these details"),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Ok"),
+            textColor: Colors.blue,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )
+        ],
+        elevation: 24.0);
   }
 
   AlertDialog createPremiumRegister() {

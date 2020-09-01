@@ -27,7 +27,7 @@ class _BookedTabState extends State<BookedTab> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    bookingsService.getBookings().then((bookings) => setState(() {
+    bookingsService.getFutureBookings().then((bookings) => setState(() {
           _bookings = bookings;
         }));
     super.initState();
@@ -50,7 +50,7 @@ class _BookedTabState extends State<BookedTab> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      bookingsService.getBookings().then((value) => setState(() {
+      bookingsService.getFutureBookings().then((value) => setState(() {
             _bookings = value;
           }));
     }

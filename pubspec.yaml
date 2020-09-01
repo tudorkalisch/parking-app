@@ -30,6 +30,7 @@ dependencies:
   device_calendar: ^3.1.0
   map_launcher: ^0.11.0
   shared_preferences: ^0.5.8
+  flutter_launcher_icons: ^0.7.5
   flutter:
     sdk: flutter
     
@@ -40,6 +41,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  image_path: "assets/ic_launcher_round.png"
+  image_path_android: "assets/ic_launcher_round.png"
+  image_path_ios: "assets/1024.png"
+  android: true
+  ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

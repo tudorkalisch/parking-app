@@ -25,7 +25,7 @@ class PaymentState extends State<PaymentView> {
   Function onPaymentComplete;
 
   String amountLabelByPremium = "Amount: ";
-  String amountTextByPremium = "Amount: ";
+  String amountTextByPremium = "12\$";
 
   PaymentState(this.onPaymentComplete);
 
