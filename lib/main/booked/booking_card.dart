@@ -72,7 +72,7 @@ class BookingCard extends StatelessWidget {
                           style: TextStyle(color: Colors.black, fontSize: 20),
                         ),
                         Text(
-                          formatMinutesAndHours(booking.startTime),
+                          formatMinutesAndHours(booking.endTime),
                           style:
                               TextStyle(color: Colors.blueAccent, fontSize: 30),
                         )

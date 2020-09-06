@@ -32,12 +32,10 @@ class MainView extends StatelessWidget {
     );
   }
 
-  Function logout(BuildContext context) {
+  void logout(BuildContext context) {
     SharedPrefs.setUserId("");
-    return () => {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => LoginView()))
-        };
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => LoginView()));
   }
 
   Function scheduleBooking() {

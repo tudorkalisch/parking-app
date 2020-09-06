@@ -291,12 +291,14 @@ class LoginState extends State<LoginView> {
         confirmErrorText = "Passwords do not match";
       });
 
-      loginService
-          .registerAccount(
-              emailTextController.text, passwordTextController.text, false)
-          .then(onRegisterSuccess)
-          .catchError(onRegisterError);
+      return;
     }
+
+    loginService
+        .registerAccount(
+            emailTextController.text, passwordTextController.text, false)
+        .then(onRegisterSuccess)
+        .catchError(onRegisterError);
   }
 
   void registerAsPremium() {
